@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+<p><a class="btn btn-default" href="{% url 'Info_info_list' %}">Info Listing</a></p>
+<table class="table">
+<tr><td>created</td><td>{{ object.created }}</td></tr>
+<tr><td>last_updated</td><td>{{ object.last_updated }}</td></tr>
+<tr><td>type</td><td>{{ object.type }}</td></tr>
+<tr><td>blood</td><td>{{ object.blood }}</td></tr>
+<tr><td>code</td><td>{{ object.code }}</td></tr>
+<tr><td>health</td><td>{{ object.health }}</td></tr>
+<tr><td>age</td><td>{{ object.age }}</td></tr>
+<tr><td>weight</td><td>{{ object.weight }}</td></tr>
+</table>
+<a class="btn btn-primary" href="{{object.get_update_url}}">Edit Info</a>
+
+{% endblock %}
