@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-07e)y_%noo$&%ogsk9x-5%=1s83exxlob$k$vlixg^dexmx$oa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [ "community.tahatechcontrol.ir","localhost","127.0.0.1"]
 
 
 # Application definition
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     #my app
     'community',
     'auth_rest_phone',
+    'info'
 ]
 
 MIDDLEWARE = [
@@ -87,6 +88,10 @@ DATABASES = {
 }
 
 
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'auth_rest_phone.authentication.MobileOtpModelBackend'
+]
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 
@@ -160,4 +165,18 @@ SIMPLE_JWT = {
     'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
     'SLIDING_TOKEN_LIFETIME': timedelta(days=1),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+}
+AUTH_SEND_SMS = True
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.FormParser',
+        'rest_framework.parsers.MultiPartParser',
+        'rest_framework.parsers.JSONParser',
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
+        'auth_rest_phone.authentication.MobileOtpModelBackend',
+    ]
 }

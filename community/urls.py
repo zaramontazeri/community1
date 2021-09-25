@@ -40,4 +40,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/auth/', include('auth_rest_phone.urls')),
     path('api/auth/', include('auth_rest_phone.urls.jwt')),
+    path('api/info/', include('info.urls')),
+
 ]
