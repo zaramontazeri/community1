@@ -54,11 +54,22 @@ class PricesSerializer(serializers.ModelSerializer):
             'value', 
             'weight_value', 
         )
+class InsuranceSerializer(serializers.ModelSerializer):
 
+    class Meta:
+        model = models.Insurance
+        fields = (
+            'pk', 
+            'created', 
+            'last_updated', 
+            'name', 
+        )
 
 class ConditionSerializer(serializers.ModelSerializer):
     remaining_time=serializers.SerializerMethodField()
     passed_time=serializers.SerializerMethodField()
+    info = InfoSerializer()
+    insurance = InsuranceSerializer()
     class Meta:
         model = models.Condition
         fields = (
@@ -70,6 +81,9 @@ class ConditionSerializer(serializers.ModelSerializer):
             'insurance_to_date', 
             'remaining_time',
             'passed_time',
+            'info',
+            "insurance"
+
         )
     def get_remaining_time(self,obj):
         # today=date.today()
@@ -83,17 +97,6 @@ class ConditionSerializer(serializers.ModelSerializer):
         return passed_time.days
 
 
-
-class InsuranceSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = models.Insurance
-        fields = (
-            'pk', 
-            'created', 
-            'last_updated', 
-            'name', 
-        )
 
 
 class WalletSerializer(serializers.ModelSerializer):
