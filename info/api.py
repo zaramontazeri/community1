@@ -33,11 +33,16 @@ class PricesViewSet(viewsets.ModelViewSet):
 
 class ConditionViewSet(viewsets.ModelViewSet):
     """ViewSet for the Condition class"""
-
     queryset = models.Condition.objects.all()
     serializer_class = serializers.ConditionSerializer
     permission_classes = [permissions.IsAuthenticated]
-
+    def get_queryset(self):
+        if self.request.user.is_superuser == True:
+            queryset = models.Condition.objects.all()
+        else:
+            queryset = models.Condition.objects.filter(user = self.request.user)
+        return queryset
+    
 
 class InsuranceViewSet(viewsets.ModelViewSet):
     """ViewSet for the Insurance class"""
