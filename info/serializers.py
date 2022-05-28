@@ -29,6 +29,7 @@ class SubCategorySerializer(serializers.ModelSerializer):
 
 class InfoSerializer(serializers.ModelSerializer):
     subcategory = SubCategorySerializer()
+    age=serializers.SerializerMethodField()
     class Meta:
         model = models.Info
         fields =(
@@ -37,10 +38,20 @@ class InfoSerializer(serializers.ModelSerializer):
             'last_updated', 
             'subcategory', 
             'code', 
-            'health', 
-            'age', 
+            'health',  
             'weight', 
+            'dateـofـbirth',
+            'age',
+            'image',
         )
+
+    def get_age(self,obj):
+        today=date.today()
+        if(today>obj.dateـofـbirth):
+            age=today-obj.dateـofـbirth
+            return age.days
+        else:
+            return "0"
 
 
 class PricesSerializer(serializers.ModelSerializer):
@@ -82,20 +93,23 @@ class ConditionSerializer(serializers.ModelSerializer):
             'remaining_time',
             'passed_time',
             'info',
-            "insurance"
+            'insurance',
 
         )
     def get_remaining_time(self,obj):
-        # today=date.today()
-        # remaining_time=obj.insurance_to_date-today
         today=date.today()
-        remaining_time=obj.insurance_to_date-today
-        return remaining_time.days
+        if obj.insurance_to_date:
+            remaining_time=obj.insurance_to_date-today
+            return remaining_time.days
+        else :
+            return None
     def get_passed_time(self,obj):
-        today=date.today()
-        passed_time=today-obj.insurance_from_date
-        return passed_time.days
-
+        if obj.insurance_from_date:
+            today=date.today()
+            passed_time=today-obj.insurance_from_date
+            return passed_time.days
+        else :
+            return None
 
 
 
@@ -120,6 +134,7 @@ class TransactionSerializer(serializers.ModelSerializer):
             'created', 
             'last_updated', 
             'value', 
+            'user',
         )
 
 

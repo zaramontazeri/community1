@@ -57,7 +57,7 @@ class WalletViewSet(viewsets.ModelViewSet):
 
     queryset = models.Wallet.objects.all()
     serializer_class = serializers.WalletSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated,permissions.IsAdminUser]
 
 class GetWalletBalance(APIView):
     """View  for the Wallet balance"""
