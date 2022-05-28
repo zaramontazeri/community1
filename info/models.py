@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.urls import reverse
 from django_extensions.db.fields import AutoSlugField
 from django.db.models import CharField
@@ -12,22 +13,27 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth import models as auth_models
 from django.db import models as models
 from django_extensions.db import fields as extension_fields
+from media_app import models as media_models
 
 class Category(models.Model):
     LIVESTOCK="livestock"
     POULTRY="poultry"
     AQUATIC="aquatic"
     TYPE_STATUS=((LIVESTOCK,LIVESTOCK),(POULTRY,POULTRY),(AQUATIC,AQUATIC))
+
+    # Fields
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     name=models.CharField(max_length=30)
     type=models.CharField(max_length=11,choices=TYPE_STATUS)
+
+    # Relationship Fields
     class Meta:
         ordering = ('name',)
         verbose_name="Category"
         verbose_name_plural="Categories"
     def __str__(self):
-        return u'%s' % self.name
+        return f'{self.name}'
 
     def get_absolute_url(self):
         return reverse('Info_category_detail', args=(self.pk,))
@@ -37,9 +43,13 @@ class Category(models.Model):
         return reverse('Info_category_update', args=(self.pk,))
 
 class SubCategory(models.Model):
+
+    # Fields
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     blood=models.CharField(max_length=30)
+
+    # Relationship Fields
     category=models.ForeignKey('info.Category',on_delete=models.CASCADE,related_name="subcategories")
     class Meta:
         ordering = ('category',)
@@ -65,11 +75,13 @@ class Info(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     code = models.IntegerField(default=0)
     health = models.CharField(max_length=7,choices=HEALTH_STATUS)
-    age = models.IntegerField(default = 0)
+    dateـofـbirth=models.DateField(default=datetime.now())
+    # age = models.IntegerField(default = 0)
     weight = models.IntegerField(default=0)
 
     # Relationship Fields
     subcategory=models.ForeignKey('info.SubCategory',on_delete=models.CASCADE,related_name="info")
+    image = models.ForeignKey(media_models.Image , on_delete=models.SET_NULL,null=True,blank=True,related_name="info_gallery_images")
 
     class Meta:
         ordering = ('-created',)
@@ -102,7 +114,7 @@ class Prices(models.Model):
         verbose_name_plural="Prices"
 
     def __str__(self):
-        return u'%s' % self.pk
+        return f'{self.pk}'
 
     def get_absolute_url(self):
         return reverse('Info_prices_detail', args=(self.pk,))
@@ -117,17 +129,20 @@ class Condition(models.Model):
     LIVE ="live"
     FINISHED = "finished"
     VALID="valid"
+    EMPTY="empty"
     STATUS = ((STAPPED,STAPPED),(LIVE,LIVE))
-    INSURANCE_STATUS = ((FINISHED,FINISHED),(VALID,VALID))
+    INSURANCE_STATUS = ((FINISHED,FINISHED),(VALID,VALID),(EMPTY,EMPTY))
+
     # Fields
     created = models.DateTimeField(auto_now_add=True, editable=False)
     last_updated = models.DateTimeField(auto_now=True, editable=False)
-    insurance_condition = models.CharField(max_length=10,choices=INSURANCE_STATUS)   ##sharayet bime
-    insurance_to_date = models.DateField() 
-    insurance_from_date=models.DateField()
+    insurance_condition = models.CharField(max_length=10,choices=INSURANCE_STATUS)   ##vazyat bime
+    insurance_from_date=models.DateField(null=True,blank=True)
+    insurance_to_date = models.DateField(null=True,blank=True) 
     status = models.CharField(max_length=8, choices=STATUS)
+
     # Relationship Fields
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE, related_name="conditions", 
     )
@@ -135,9 +150,9 @@ class Condition(models.Model):
         'info.Info',
         on_delete=models.CASCADE, related_name="conditions", 
     )
-    insurance = models.OneToOneField(
+    insurance = models.ForeignKey(
         'info.Insurance',
-        on_delete=models.CASCADE, related_name="conditions", 
+        on_delete=models.CASCADE, related_name="conditions", null=True,blank=True
     )
 
     class Meta:
@@ -146,7 +161,7 @@ class Condition(models.Model):
         verbose_name_plural="Conditions"
 
     def __str__(self):
-        return u'%s' % self.pk
+        return f'{self.pk}'
 
     def get_absolute_url(self):
         return reverse('Info_condition_detail', args=(self.pk,))
@@ -163,14 +178,14 @@ class Insurance(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     name = models.CharField(max_length=30)
 
-
+    # Relationship Fields
     class Meta:
         ordering = ('-created',)
         verbose_name="Insurance"
         verbose_name_plural="Insurances"
 
     def __str__(self):
-        return u'%s' % self.name
+        return f'{self.name}'
 
     def get_absolute_url(self):
         return reverse('Info_insurance_detail', args=(self.pk,))
@@ -199,7 +214,7 @@ class Wallet(models.Model):
         verbose_name_plural="Wallets"
 
     def __str__(self):
-        return u'%s' % self.pk
+        return f'{self.pk}'
 
     def get_absolute_url(self):
         return reverse('Info_wallet_detail', args=(self.pk,))
@@ -216,14 +231,18 @@ class Transaction(models.Model):
     last_updated = models.DateTimeField(auto_now=True, editable=False)
     value = models.DecimalField(max_digits=10, decimal_places=0)
 
-
+    # Relationship Fields
+    user=models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,related_name='transactions',
+    )
     class Meta:
         ordering = ('-created',)
         verbose_name="Transaction"
         verbose_name_plural="Transactions"
 
     def __str__(self):
-        return u'%s' % self.pk
+        return f'{self.pk}'
 
     def get_absolute_url(self):
         return reverse('Info_transaction_detail', args=(self.pk,))

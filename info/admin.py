@@ -39,7 +39,7 @@ class InfoAdminForm(forms.ModelForm):
 
 class InfoAdmin(admin.ModelAdmin):
     form = InfoAdminForm
-    list_display = ['created', 'last_updated', 'subcategory', 'code', 'health', 'age', 'weight']
+    list_display = ['created', 'last_updated', 'subcategory', 'code', 'health', 'dateـofـbirth', 'weight']
     readonly_fields = ['created', 'last_updated', ]
 
 admin.site.register(Info, InfoAdmin)
@@ -69,7 +69,7 @@ class ConditionAdminForm(forms.ModelForm):
 
 class ConditionAdmin(admin.ModelAdmin):
     form = ConditionAdminForm
-    list_display = ['created', 'last_updated', 'insurance_condition', 'insurance_to_date','insurance_from_date']
+    list_display = ['created', 'last_updated', 'insurance_condition','insurance_from_date', 'insurance_to_date']
     readonly_fields = ['created', 'last_updated']
 
 admin.site.register(Condition, ConditionAdmin)

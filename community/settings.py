@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-07e)y_%noo$&%ogsk9x-5%=1s83exxlob$k$vlixg^dexmx$oa
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = [ "community.tahatechcontrol.ir","localhost","127.0.0.1"]
+ALLOWED_HOSTS = [ "community.tahatechcontrol.ir","localhost","127.0.0.1",'*']
 
 
 # Application definition
@@ -40,10 +40,13 @@ INSTALLED_APPS = [
     #new
     'rest_framework',
     'drf_yasg2',
+    'django_extensions',
+    'easy_thumbnails',
     #my app
     'community',
     'auth_rest_phone',
-    'info'
+    'info',
+    'media_app',
 ]
 
 MIDDLEWARE = [
